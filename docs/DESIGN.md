@@ -14,9 +14,9 @@
 * Provider-independent ID / address
 * Separation of human-friendly ID and other IDs (elimination of semantics from non-human-friendly IDs)
 * Secret recipient ID / address to unauthorized users (via mutually-authenticated ID)
+* Verification of the sender of a message
 * Anonymous messaging
 * 1-to-1 private messaging
 * 1-to-N messaging
 * Message thread support (e.g., `In-Reply-To` in E-mail header)
-* Verification of the sender of a message
 
