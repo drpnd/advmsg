@@ -19,4 +19,5 @@
 * 1-to-1 private messaging
 * 1-to-N messaging
 * Message thread support (e.g., `In-Reply-To` in E-mail header)
+* Synchronous/Asynchronous messaging support
 
