@@ -9,7 +9,7 @@
 
 ## Requirements
 
-* Message storage like an IMAP mailbox
+* Portable message storage like an IMAP mailbox
 * Secure messaging between sender and receiver
 * Provider-independent ID / address
 * Separation of human-friendly ID and other IDs (elimination of semantics from non-human-friendly IDs)
