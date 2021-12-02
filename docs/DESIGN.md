@@ -21,3 +21,7 @@
 * Message thread support (e.g., `In-Reply-To` in E-mail header)
 * Synchronous/Asynchronous messaging support
 
+## Identifier
+
+ref. Decentralized ID, Self-soverign ID
+
