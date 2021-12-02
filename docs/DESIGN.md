@@ -23,5 +23,12 @@
 
 ## Identifier
 
-ref. Decentralized ID, Self-soverign ID
+It may be easy to use public key information such as fingerprints to generate an identifier (ID).
+However, it depends on algorithms and does not guarantee future safety and extensions.
+Therefore, we separate ID generation and public-key cryptosystem algorithm.
+
+ref. Decentralized Identifiers, Self-soverign identity
+
+### Flat ID space
+
 
