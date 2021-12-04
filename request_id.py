@@ -33,9 +33,9 @@ def generate_csr(cn, key):
     req = OpenSSL.crypto.X509Req()
     # Set the common name
     req.get_subject().CN = cn
-    # Set the public key to the request (with SHA-1 fingerprint)
+    # Set the public key to the request (with SHA256 fingerprint)
     req.set_pubkey(key)
-    req.sign(key, 'sha1')
+    req.sign(key, 'sha256')
     return req
 
 """
