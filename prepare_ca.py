@@ -50,8 +50,6 @@ def main(args):
     key = ec.generate_private_key(ec.SECP256R1(), default_backend())
     # Private key PEM
     key_pem = key.private_bytes(encoding=serialization.Encoding.PEM, format=serialization.PrivateFormat.TraditionalOpenSSL, encryption_algorithm=serialization.NoEncryption())
-    # Public key
-    pub_pem = key.public_key().public_bytes(encoding=serialization.Encoding.PEM, format=serialization.PublicFormat.SubjectPublicKeyInfo)
 
     # Save the private keys
     with open(args.private_key, 'wb') as f:
