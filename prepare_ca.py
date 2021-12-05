@@ -61,7 +61,7 @@ def main(args):
 
     # Generate a self-signed CA certificate
     cacert = generate_cacert(CA_CN, okey)
-    # Dump the CSR as a PEM file
+    # Dump the CA certificate as a PEM file
     cacert_pem = OpenSSL.crypto.dump_certificate(OpenSSL.crypto.FILETYPE_PEM, cacert)
 
     # Save the CSR file
