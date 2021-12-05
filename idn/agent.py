@@ -2,6 +2,7 @@ import argparse
 
 # Arguments
 parser = argparse.ArgumentParser()
+parser.add_argument('--port', type=int, default=10914)
 
 """
 Main routine
