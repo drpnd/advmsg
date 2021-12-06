@@ -13,11 +13,16 @@ def main(args):
 
     # Open a socket
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     sock.bind((args.bind_address, args.bind_port))
     sock.listen(10)
     while True:
         client, caddr = sock.accept()
         print(client, caddr)
+        data = client.recv(4096)
+        print(data)
+        client.send(data)
+        client.close()
         pass
     sock.close()
 
