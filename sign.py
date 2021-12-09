@@ -46,19 +46,16 @@ def main(args):
     with open(args.csr, 'rb') as f:
         req_pem = f.read()
         f.close()
-        return False
 
     # Load the CA private key
     with open(args.private_key, 'rb') as f:
         key_pem = f.read()
         f.close()
-        return False
 
     # Load the CA certificate
     with open(args.cacert, 'rb') as f:
         cacert_pem = f.read()
         f.close()
-        return False
 
     # PEMs to OpenSSL crypto instances
     key = OpenSSL.crypto.load_privatekey(OpenSSL.crypto.FILETYPE_PEM, key_pem)
