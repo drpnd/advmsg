@@ -1,10 +1,5 @@
 import argparse
 import OpenSSL
-import secrets
-import sqlite3
-import time
-from cryptography.hazmat.backends import default_backend
-from cryptography.hazmat.primitives import serialization
 
 # Arguments
 parser = argparse.ArgumentParser()
