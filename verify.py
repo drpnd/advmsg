@@ -7,6 +7,20 @@ parser.add_argument('--cacert', type=str, default="ca/cacert.pem")
 parser.add_argument('--crt', type=str, default="crt.pem")
 
 """
+Verify a certificate with the specified CA certificate
+"""
+def verify_certificate(cert, cacert):
+    # Verify the certificate with the CA certificate
+    try:
+        store = OpenSSL.crypto.X509Store()
+        store.add_cert(cacert)
+        store_ctx = OpenSSL.crypto.X509StoreContext(store, cert)
+        store_ctx.verify_certificate()
+        return True
+    except Exception as e:
+        return False
+
+"""
 Main routine
 """
 def main(args):
@@ -22,13 +36,11 @@ def main(args):
         f.close()
     cert = OpenSSL.crypto.load_certificate(OpenSSL.crypto.FILETYPE_PEM, cert_pem)
 
-    try:
-        store = OpenSSL.crypto.X509Store()
-        store.add_cert(cacert)
-        store_ctx = OpenSSL.crypto.X509StoreContext(store, cert)
-        store_ctx.verify_certificate()
-    except Exception as e:
-        return False
+    # Verification
+    if verify_certificate(cert, cacert):
+        print("Valid certificate")
+    else:
+        print("Invalid certificate")
 
     return True
 
