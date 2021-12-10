@@ -26,11 +26,6 @@ class ClientThread(threading.Thread):
             if len(data) == 0:
                 self.running = False
 
-    def stop(self):
-        print("Closing the socket")
-        self.running = False
-        self.csock.close()
-
 """
 Main routine
 """
