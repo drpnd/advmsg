@@ -13,15 +13,20 @@ NUM_WORKERS = 10
 Thread
 """
 class ClientThread(threading.Thread):
+    """
+    Constructor
+    """
     def __init__(self, csock):
         threading.Thread.__init__(self)
         self.csock = csock
         self.running = True
 
+    """
+    Run this thread
+    """
     def run(self):
         while self.running:
             data = self.csock.recv(4096)
-            print(data)
             self.csock.send(data)
             if len(data) == 0:
                 self.running = False
@@ -35,22 +40,18 @@ def main(args):
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     sock.bind((args.bind_address, args.bind_port))
     sock.listen(NUM_WORKERS)
-    threads = []
-    main_thread = threading.current_thread()
     while True:
-        # Accept a client
+        # Accept a client and start a thread
         csock, caddr = sock.accept()
-        print(csock, caddr)
         th = ClientThread(csock)
         th.start()
-        threads.append(th)
 
+        # Join dead threads
         for th in threading.enumerate():
             if th == threading.main_thread():
                 continue
             if not th.is_alive():
                 th.join()
-            print(th, th.is_alive())
     # Close the socket
     sock.close()
 
