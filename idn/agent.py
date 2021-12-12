@@ -6,6 +6,7 @@ import threading
 parser = argparse.ArgumentParser()
 parser.add_argument('--bind-address', type=str, default="0.0.0.0")
 parser.add_argument('--bind-port', type=int, default=10914)
+parser.add_argument('--rendezvous', type=str, default="idn/rendezvous.txt")
 
 NUM_WORKERS = 10
 
@@ -32,9 +33,29 @@ class ClientThread(threading.Thread):
                 self.running = False
 
 """
+PeerManager
+"""
+class PeerManager():
+    """
+    Constructor
+    """
+    def __init__(self):
+        pass
+
+"""
 Main routine
 """
 def main(args):
+    # Open a rendezvous-point file
+    with open(args.rendezvous, 'r') as f:
+        peers = []
+        for ln in f:
+            ln = ln.strip()
+            ipaddr, port = ln.split()
+            peers.append((ipaddr, port))
+    print(peers)
+    return False
+
     # Open a socket and listen connections on it
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
