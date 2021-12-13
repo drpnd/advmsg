@@ -54,6 +54,10 @@ def main(args):
             ipaddr, port = ln.split()
             peers.append((ipaddr, port))
 
+    for p in peers:
+        sock = socket.socket(socket.AF_NET, socket.SOCK_STREAM)
+        sock.connect((p[0], int(p[1])))
+
     # Open a socket and listen connections on it
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
