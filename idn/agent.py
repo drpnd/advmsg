@@ -53,8 +53,6 @@ def main(args):
             ln = ln.strip()
             ipaddr, port = ln.split()
             peers.append((ipaddr, port))
-    print(peers)
-    return False
 
     # Open a socket and listen connections on it
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
