@@ -33,7 +33,7 @@ class PeerThread(threading.Thread):
                 self.running = False
 
 """
-PeerManager
+Peer manager
 """
 class PeerManager():
     """
@@ -41,6 +41,24 @@ class PeerManager():
     """
     def __init__(self):
         pass
+
+    """
+    Aadd a new peer
+    """
+    def add_new_peer(self, sock):
+        th = PeerThread(sock)
+        th.start()
+
+    """
+    Clean threads
+    """
+    def clean_threads(self):
+        # Join dead threads
+        for th in threading.enumerate():
+            if th == threading.main_thread():
+                continue
+            if not th.is_alive():
+                th.join()
 
 """
 Main routine
@@ -54,6 +72,9 @@ def main(args):
             ipaddr, port = ln.split()
             peers.append((ipaddr, port))
 
+    # Prepare a PeerManager
+    pm = PeerManager()
+
     # Establish connections to all peers
     for p in peers:
         try:
@@ -61,8 +82,7 @@ def main(args):
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             sock.connect((p[0], int(p[1])))
             # Start a peer thread
-            th = PeerThread(sock)
-            th.start()
+            pm.add_new_peer(sock)
         except:
             # In case of encountering an error
             pass
@@ -75,8 +95,7 @@ def main(args):
     while True:
         # Accept a client and start a thread
         csock, caddr = sock.accept()
-        th = PeerThread(csock)
-        th.start()
+        pm.add_new_peer(csock)
 
         # Join dead threads
         for th in threading.enumerate():
