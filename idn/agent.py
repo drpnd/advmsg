@@ -13,7 +13,7 @@ NUM_WORKERS = 10
 """
 Thread
 """
-class ClientThread(threading.Thread):
+class PeerThread(threading.Thread):
     """
     Constructor
     """
@@ -55,8 +55,16 @@ def main(args):
             peers.append((ipaddr, port))
 
     for p in peers:
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sock.connect((p[0], int(p[1])))
+        try:
+            # Establish a connection to a peer
+            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            sock.connect((p[0], int(p[1])))
+            # Start a peer thread
+            th = PeerThread(sock)
+            th.start()
+        except:
+            # In case of encountering an error
+            pass
 
     # Open a socket and listen connections on it
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -66,7 +74,7 @@ def main(args):
     while True:
         # Accept a client and start a thread
         csock, caddr = sock.accept()
-        th = ClientThread(csock)
+        th = PeerThread(csock)
         th.start()
 
         # Join dead threads
