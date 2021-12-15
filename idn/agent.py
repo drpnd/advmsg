@@ -54,6 +54,7 @@ def main(args):
             ipaddr, port = ln.split()
             peers.append((ipaddr, port))
 
+    # Establish connections to all peers
     for p in peers:
         try:
             # Establish a connection to a peer
