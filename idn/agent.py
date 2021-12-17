@@ -36,6 +36,7 @@ class PeerThread(threading.Thread):
 Peer manager
 """
 class PeerManager():
+    threads = {}
     """
     Constructor
     """
@@ -47,6 +48,7 @@ class PeerManager():
     """
     def add_new_peer(self, sock):
         th = PeerThread(sock)
+        self.threads[th.ident] = th
         th.start()
 
     """
@@ -58,6 +60,7 @@ class PeerManager():
             if th == threading.main_thread():
                 continue
             if not th.is_alive():
+                del self.threads[th.ident]
                 th.join()
 
 """
@@ -96,13 +99,8 @@ def main(args):
         # Accept a client and start a thread
         csock, caddr = sock.accept()
         pm.add_new_peer(csock)
-
-        # Join dead threads
-        for th in threading.enumerate():
-            if th == threading.main_thread():
-                continue
-            if not th.is_alive():
-                th.join()
+        # Clean dead threads
+        pm.clean_threads()
     # Close the socket
     sock.close()
 
