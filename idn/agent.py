@@ -1,6 +1,7 @@
 import argparse
 import socket
 import threading
+import OpenSSL
 
 # Arguments
 parser = argparse.ArgumentParser()
@@ -73,12 +74,13 @@ class PeerThread(threading.Thread):
 Peer manager
 """
 class PeerManager():
+    myid = None
     threads = {}
     """
     Constructor
     """
-    def __init__(self):
-        pass
+    def __init__(self, myid):
+        self.myid = myid
 
     """
     Add a new peer
@@ -104,6 +106,15 @@ class PeerManager():
 Main routine
 """
 def main(args):
+    # Load the node certificate
+    with open(args.id_crt, 'rb') as f:
+        cert_pem = f.read()
+        f.close()
+    cert = OpenSSL.crypto.load_certificate(OpenSSL.crypto.FILETYPE_PEM, cert_pem)
+
+    # Prepare a PeerManager with the node ID
+    pm = PeerManager(cert.get_subject().CN)
+
     # Open a rendezvous-point file
     with open(args.rendezvous, 'r') as f:
         peers = []
@@ -111,9 +122,6 @@ def main(args):
             ln = ln.strip()
             ipaddr, port = ln.split()
             peers.append((ipaddr, port))
-
-    # Prepare a PeerManager
-    pm = PeerManager()
 
     # Establish connections to all peers
     for p in peers:
