@@ -11,15 +11,28 @@ parser.add_argument('--rendezvous', type=str, default="idn/rendezvous.txt")
 NUM_WORKERS = 10
 
 """
+Peer
+"""
+class Peer():
+    """
+    Constructor
+    """
+    def __init__(self, sock, ipaddr, port):
+        self.sock = sock
+        self.ipaddr = ipaddr
+        self.port = port
+        pass
+
+"""
 Thread
 """
 class PeerThread(threading.Thread):
     """
     Constructor
     """
-    def __init__(self, csock):
+    def __init__(self, peer):
         threading.Thread.__init__(self)
-        self.csock = csock
+        self.peer = peer
         self.running = True
 
     """
@@ -27,8 +40,8 @@ class PeerThread(threading.Thread):
     """
     def run(self):
         while self.running:
-            data = self.csock.recv(4096)
-            self.csock.send(data)
+            data = self.peer.sock.recv(4096)
+            self.peer.sock.send(data)
             if len(data) == 0:
                 self.running = False
 
@@ -44,10 +57,10 @@ class PeerManager():
         pass
 
     """
-    Aadd a new peer
+    Add a new peer
     """
-    def add_new_peer(self, sock):
-        th = PeerThread(sock)
+    def add_new_peer(self, peer):
+        th = PeerThread(peer)
         self.threads[th.ident] = th
         th.start()
 
@@ -85,7 +98,8 @@ def main(args):
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             sock.connect((p[0], int(p[1])))
             # Start a peer thread
-            pm.add_new_peer(sock)
+            peer = Peer((p[0], int(p[1])))
+            pm.add_new_peer(peer)
         except:
             # In case of encountering an error
             pass
@@ -98,7 +112,8 @@ def main(args):
     while True:
         # Accept a client and start a thread
         csock, caddr = sock.accept()
-        pm.add_new_peer(csock)
+        peer = Peer(csock, caddr[0], caddr[1])
+        pm.add_new_peer(peer)
         # Clean dead threads
         pm.clean_threads()
     # Close the socket
