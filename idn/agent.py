@@ -21,6 +21,17 @@ class Peer():
         self.sock = sock
         self.ipaddr = ipaddr
         self.port = port
+
+    """
+    Join
+    """
+    def join(self):
+        pass
+
+    """
+    Connect
+    """
+    def connect(self):
         pass
 
 """
@@ -40,10 +51,14 @@ class PeerThread(threading.Thread):
     """
     def run(self):
         while self.running:
+            # Receive data
             data = self.peer.sock.recv(4096)
-            self.peer.sock.send(data)
             if len(data) == 0:
                 self.running = False
+            else:
+                # Parse the received data
+                pass
+            #self.peer.sock.send(data)
 
 """
 Peer manager
