@@ -7,6 +7,8 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--bind-address', type=str, default="0.0.0.0")
 parser.add_argument('--bind-port', type=int, default=10914)
 parser.add_argument('--rendezvous', type=str, default="idn/rendezvous.txt")
+parser.add_argument('--id-key', type=str, default="idn/key.pem")
+parser.add_argument('--id-crt', type=str, default="idn/crt.pem")
 
 NUM_WORKERS = 10
 
@@ -14,6 +16,8 @@ NUM_WORKERS = 10
 Peer
 """
 class Peer():
+    received_data = ""
+
     """
     Constructor
     """
@@ -21,6 +25,16 @@ class Peer():
         self.sock = sock
         self.ipaddr = ipaddr
         self.port = port
+
+    """
+    Receive and parse data
+    """
+    def recv(self):
+        # Receive data
+        data = self.sock.recv(4096)
+        if len(data) == 0:
+            return False
+        # Parse the data
 
     """
     Join
@@ -52,13 +66,8 @@ class PeerThread(threading.Thread):
     def run(self):
         while self.running:
             # Receive data
-            data = self.peer.sock.recv(4096)
-            if len(data) == 0:
+            if not self.peer.recv():
                 self.running = False
-            else:
-                # Parse the received data
-                pass
-            #self.peer.sock.send(data)
 
 """
 Peer manager
