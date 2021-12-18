@@ -30,7 +30,7 @@ def main(args):
         f.close()
     cacert = OpenSSL.crypto.load_certificate(OpenSSL.crypto.FILETYPE_PEM, cacert_pem)
 
-    # Load th certificate
+    # Load the certificate
     with open(args.crt, 'rb') as f:
         cert_pem = f.read()
         f.close()
