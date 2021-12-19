@@ -10,8 +10,29 @@ parser.add_argument('--bind-port', type=int, default=10914)
 parser.add_argument('--rendezvous', type=str, default="idn/rendezvous.txt")
 parser.add_argument('--id-key', type=str, default="idn/key.pem")
 parser.add_argument('--id-crt', type=str, default="idn/crt.pem")
+parser.add_argument('--cacert', type=str, default="idn/cacert.pem")
 
 NUM_WORKERS = 10
+
+"""
+Logging function
+"""
+def log(s):
+    print(s)
+
+"""
+Verify a certificate with the specified CA certificate
+"""
+def verify_certificate(cert, cacert):
+    # Verify the certificate with the CA certificate
+    try:
+        store = OpenSSL.crypto.X509Store()
+        store.add_cert(cacert)
+        store_ctx = OpenSSL.crypto.X509StoreContext(store, cert)
+        store_ctx.verify_certificate()
+        return True
+    except Exception as e:
+        return False
 
 """
 Peer
@@ -36,11 +57,14 @@ class Peer():
         if len(data) == 0:
             return False
         # Parse the data
+        print(data)
 
     """
     Join
     """
-    def join(self):
+    def join(self, myid):
+        s = "JOIN {} {}".format(len(myid), myid)
+        self.sock.send(s.encode())
         pass
 
     """
@@ -74,13 +98,20 @@ class PeerThread(threading.Thread):
 Peer manager
 """
 class PeerManager():
-    myid = None
+    cert = None
     threads = {}
+
     """
     Constructor
     """
-    def __init__(self, myid):
-        self.myid = myid
+    def __init__(self, cert):
+        self.cert = cert
+
+    """
+    Get my identifier
+    """
+    def get_my_id(self):
+        return self.cert.get_subject().CN
 
     """
     Add a new peer
@@ -106,6 +137,12 @@ class PeerManager():
 Main routine
 """
 def main(args):
+    # Load the CA certificate
+    with open(args.cacert, 'rb') as f:
+        cacert_pem = f.read()
+        f.close()
+    cacert = OpenSSL.crypto.load_certificate(OpenSSL.crypto.FILETYPE_PEM, cacert_pem)
+
     # Load the node certificate
     with open(args.id_crt, 'rb') as f:
         cert_pem = f.read()
@@ -113,7 +150,8 @@ def main(args):
     cert = OpenSSL.crypto.load_certificate(OpenSSL.crypto.FILETYPE_PEM, cert_pem)
 
     # Prepare a PeerManager with the node ID
-    pm = PeerManager(cert.get_subject().CN)
+    pm = PeerManager(cert)
+    log('Starting PeerManager (ID: {})'.format(pm.get_my_id()))
 
     # Open a rendezvous-point file
     with open(args.rendezvous, 'r') as f:
