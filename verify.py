@@ -24,7 +24,7 @@ def verify_certificate(cert, cacert):
 Main routine
 """
 def main(args):
-    # Load th CA certificate
+    # Load the CA certificate
     with open(args.cacert, 'rb') as f:
         cacert_pem = f.read()
         f.close()
