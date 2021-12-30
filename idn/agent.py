@@ -85,15 +85,16 @@ Peer manager
 """
 class PeerManager():
     cert = None
-    cacert = None
     threads = {}
+    cacert_store = None
 
     """
     Constructor
     """
     def __init__(self, cert, cacert):
         self.cert = cert
-        self.cacert = cacert
+        self.cacert_store = OpenSSL.crypto.X509Store()
+        self.store.add_cert(cacert)
 
     """
     Verify a certificate with the specified CA certificate
@@ -101,9 +102,7 @@ class PeerManager():
     def verify_certificate(self, cert):
         # Verify the certificate with the CA certificate
         try:
-            store = OpenSSL.crypto.X509Store()
-            store.add_cert(self.cacert)
-            store_ctx = OpenSSL.crypto.X509StoreContext(store, cert)
+            store_ctx = OpenSSL.crypto.X509StoreContext(self.store, cert)
             store_ctx.verify_certificate()
             return True
         except Exception as e:
