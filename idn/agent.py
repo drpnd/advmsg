@@ -21,20 +21,6 @@ def log(s):
     print(s)
 
 """
-Verify a certificate with the specified CA certificate
-"""
-def verify_certificate(cert, cacert):
-    # Verify the certificate with the CA certificate
-    try:
-        store = OpenSSL.crypto.X509Store()
-        store.add_cert(cacert)
-        store_ctx = OpenSSL.crypto.X509StoreContext(store, cert)
-        store_ctx.verify_certificate()
-        return True
-    except Exception as e:
-        return False
-
-"""
 Peer
 """
 class Peer():
@@ -99,13 +85,29 @@ Peer manager
 """
 class PeerManager():
     cert = None
+    cacert = None
     threads = {}
 
     """
     Constructor
     """
-    def __init__(self, cert):
+    def __init__(self, cert, cacert):
         self.cert = cert
+        self.cacert = cacert
+
+    """
+    Verify a certificate with the specified CA certificate
+    """
+    def verify_certificate(self, cert):
+        # Verify the certificate with the CA certificate
+        try:
+            store = OpenSSL.crypto.X509Store()
+            store.add_cert(self.cacert)
+            store_ctx = OpenSSL.crypto.X509StoreContext(store, cert)
+            store_ctx.verify_certificate()
+            return True
+        except Exception as e:
+            return False
 
     """
     Get my identifier
@@ -150,7 +152,7 @@ def main(args):
     cert = OpenSSL.crypto.load_certificate(OpenSSL.crypto.FILETYPE_PEM, cert_pem)
 
     # Prepare a PeerManager with the node ID
-    pm = PeerManager(cert)
+    pm = PeerManager(cert, args.cacert)
     log('Starting PeerManager (ID: {})'.format(pm.get_my_id()))
 
     # Open a rendezvous-point file
