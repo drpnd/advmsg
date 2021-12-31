@@ -94,7 +94,7 @@ class PeerManager():
     def __init__(self, cert, cacert):
         self.cert = cert
         self.cacert_store = OpenSSL.crypto.X509Store()
-        self.store.add_cert(cacert)
+        self.cacert_store.add_cert(cacert)
 
     """
     Verify a certificate with the specified CA certificate
@@ -102,7 +102,7 @@ class PeerManager():
     def verify_certificate(self, cert):
         # Verify the certificate with the CA certificate
         try:
-            store_ctx = OpenSSL.crypto.X509StoreContext(self.store, cert)
+            store_ctx = OpenSSL.crypto.X509StoreContext(self.cacert_store, cert)
             store_ctx.verify_certificate()
             return True
         except Exception as e:
@@ -151,7 +151,7 @@ def main(args):
     cert = OpenSSL.crypto.load_certificate(OpenSSL.crypto.FILETYPE_PEM, cert_pem)
 
     # Prepare a PeerManager with the node ID
-    pm = PeerManager(cert, args.cacert)
+    pm = PeerManager(cert, cacert)
     log('Starting PeerManager (ID: {})'.format(pm.get_my_id()))
 
     # Open a rendezvous-point file
