@@ -35,6 +35,12 @@ def verify_signature(cert, e, m, d='sha256'):
         return False
 
 """
+Generate a signature for a message with a key and a specified hash function
+"""
+def generate_signature(key, m, d):
+    return OpenSSL.crypto.sign(key, m, d)
+
+"""
 Main routine
 """
 def main(args):
@@ -58,8 +64,10 @@ def main(args):
 
     m = b'test'
     d = 'sha256'
-    e = OpenSSL.crypto.sign(key, m, d)
+    e = generate_signature(key, m, d)
     print(verify_signature(cert, e, m, d))
+    pubkey = cert.get_pubkey()
+
     return True
 
 """
