@@ -56,7 +56,9 @@ class Peer():
     """
     Connect
     """
-    def connect(self):
+    def connect(self, myid):
+        s = "CONNECT {} {}".format(len(myid), myid)
+        self.sock.send(s.encode())
         pass
 
 """
